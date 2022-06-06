@@ -6,7 +6,7 @@ import Weigtes from "../components/Weigtes";
 
 const Home: NextPage = () => {
   return (
-    <>
+    <div className="lg:max-w-6xl mx-auto h-screen overflow-hidden">
       <Head>
         <title>Twitter Clone</title>
         <link
@@ -15,12 +15,12 @@ const Home: NextPage = () => {
         />
       </Head>
 
-      <main className="grid grid-cols-9">
+      <main className="grid grid-cols-10">
         <Sidebar />
         <Feeds />
         <Weigtes />
       </main>
-    </>
+    </div>
   );
 };
 

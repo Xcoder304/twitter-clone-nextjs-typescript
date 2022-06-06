@@ -13,8 +13,8 @@ import SidebarRow from "./SidebarRow";
 
 function Sidebar() {
   return (
-    <div className="col-span-2 px-2 mt-3">
-      <div className="w-12 h-12 hover:bg-[#E8F5FD] rounded-full flex items-center justify-center cursor-pointer mb-1 ml-2">
+    <div className="col-span-2 px-2 mt-3 flex flex-col items-center justify-start lg:items-start lg:justify-start">
+      <div className="w-12 h-12 hover:bg-[#E8F5FD] rounded-full flex items-center justify-center cursor-pointer mb-1 ml-1 lg:ml-2">
         <img
           src="https://www.freepnglogos.com/uploads/twitter-logo-png/twitter-logo-vector-png-clipart-1.png"
           alt="twitter logo"
