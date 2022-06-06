@@ -5,9 +5,10 @@ import {
   PhotographIcon,
   SearchCircleIcon,
 } from "@heroicons/react/outline";
-import React from "react";
+import React, { useState } from "react";
 
 function TweetBox() {
+  const [disableBtn, setdisableBtn] = useState("");
   return (
     <div className="flex space-x-4 px-2 mt-4 border-b pb-4">
       <img
@@ -21,6 +22,8 @@ function TweetBox() {
           <input
             type="text"
             placeholder="What's happening?"
+            value={disableBtn}
+            onChange={(e) => setdisableBtn(e.target.value)}
             className="h-14 outline-none text-[#0f1419] text-xl placeholder:text-xl"
           />
           <div className="flex items-center justify-between">
@@ -32,7 +35,12 @@ function TweetBox() {
               <LocationMarkerIcon className="w-6 h-6 cursor-pointer text-twitterColor hover:scale-125 transition-all duration-150 ease-out  hover:bg-blue-200 rounded-full hover:p-[3px]" />
             </div>
 
-            <button className="bg-twitterBg_1 text-white px-5 py-[6px] text-lg capitalize font-medium rounded-full mr-2">
+            <button
+              disabled={!disableBtn}
+              className={`bg-twitterBg_1 text-white px-5 py-[6px] text-lg capitalize font-medium rounded-full mr-2 transition-all duration-400 ease-in ${
+                !disableBtn && "opacity-40"
+              }`}
+            >
               tweet
             </button>
           </div>

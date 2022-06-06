@@ -18,7 +18,7 @@ function Sidebar() {
         <img
           src="https://www.freepnglogos.com/uploads/twitter-logo-png/twitter-logo-vector-png-clipart-1.png"
           alt="twitter logo"
-          className="w-[66%] h-[66%] object-contain"
+          className="w-[66%] h-[66%] object-contain select-none"
         />
       </div>
 
