@@ -5,14 +5,31 @@ import {
   PhotographIcon,
   SearchCircleIcon,
 } from "@heroicons/react/outline";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import { useSession } from "next-auth/react";
 
 function TweetBox() {
-  const [disableBtn, setdisableBtn] = useState("");
+  const [userInput, setUserInput] = useState<string>("");
+  const [image, setImage] = useState<string>("");
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const [isAddImgOpen, setisAddImgOpen] = useState<boolean>(false);
+  const { data: session } = useSession();
+
+  const AddTheImage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    if (!imageInputRef?.current?.value) return;
+
+    setImage(imageInputRef?.current?.value);
+    imageInputRef.current.value = "";
+  };
+
   return (
     <div className="flex space-x-4 px-2 mt-4 border-b pb-4">
       <img
-        src="https://media.istockphoto.com/photos/millennial-male-team-leader-organize-virtual-workshop-with-employees-picture-id1300972574?b=1&k=20&m=1300972574&s=170667a&w=0&h=2nBGC7tr0kWIU8zRQ3dMg-C5JLo9H2sNUuDjQ5mlYfo="
+        src={
+          session?.user?.image ||
+          "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+        }
         alt="user profile"
         className="w-12 h-12 rounded-full object-cover cursor-pointer select-none"
       />
@@ -21,14 +38,17 @@ function TweetBox() {
         <form className="flex-1 flex flex-col">
           <input
             type="text"
-            placeholder="What's happening?"
-            value={disableBtn}
-            onChange={(e) => setdisableBtn(e.target.value)}
+            placeholder={`What's happening ${session?.user?.name}?`}
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
             className="h-14 outline-none text-[#0f1419] text-xl placeholder:text-xl"
           />
           <div className="flex items-center justify-between select-none">
             <div className="flex items-center space-x-2">
-              <PhotographIcon className="w-6 h-6 cursor-pointer text-twitterColor hover:scale-150 transition-all duration-150 ease-out  hover:bg-blue-200 rounded-full hover:p-[3px]" />
+              <PhotographIcon
+                className="w-6 h-6 cursor-pointer text-twitterColor hover:scale-125 transition-all duration-150 ease-out  hover:bg-blue-200 rounded-full hover:p-[3px]"
+                onClick={() => setisAddImgOpen(!isAddImgOpen)}
+              />
               <SearchCircleIcon className="w-6 h-6 cursor-pointer text-twitterColor hover:scale-125 transition-all duration-150 ease-out  hover:bg-blue-200 rounded-full hover:p-[3px]" />
               <EmojiHappyIcon className="w-6 h-6 cursor-pointer text-twitterColor hover:scale-125 transition-all duration-150 ease-out  hover:bg-blue-200 rounded-full hover:p-[3px]" />
               <CalendarIcon className="w-6 h-6 cursor-pointer text-twitterColor hover:scale-125 transition-all duration-150 ease-out  hover:bg-blue-200 rounded-full hover:p-[3px]" />
@@ -36,14 +56,41 @@ function TweetBox() {
             </div>
 
             <button
-              disabled={!disableBtn}
+              disabled={!userInput}
               className={`bg-twitterBg_1 text-white px-5 py-[6px] text-lg capitalize font-medium rounded-full mr-2 transition-all duration-400 ease-in ${
-                !disableBtn && "opacity-40"
+                !userInput && "opacity-40"
               }`}
             >
               tweet
             </button>
           </div>
+          {isAddImgOpen && (
+            <div className="flex flex-col">
+              <form className="mt-4 flex items-center flex-1 space-x-4">
+                <input
+                  ref={imageInputRef}
+                  type="text"
+                  placeholder="Enter The Image Url"
+                  className="px-2 py-2 bg-slate-100 border outline-none rounded-md flex-1"
+                />
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-twitterBg_1 text-white text-base font-bold rounded-full hover:opacity-70 transition-all duration-100 ease-in"
+                  onClick={AddTheImage}
+                >
+                  Add Image
+                </button>
+              </form>
+
+              {image && (
+                <img
+                  src={image}
+                  alt="image"
+                  className="mt-3 w-[90%] h-[90%] object-contain mx-auto shadow-md rounded-lg"
+                />
+              )}
+            </div>
+          )}
         </form>
       </div>
     </div>
