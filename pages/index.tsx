@@ -13,7 +13,7 @@ interface Props {
 
 const Home = ({ tweets }: Props) => {
   return (
-    <div className="lg:max-w-6xl mx-auto h-screen overflow-hidden">
+    <div className="lg:max-w-6xl mx-auto h-screen ">
       <Head>
         <title>Twitter Clone</title>
         <link
@@ -35,8 +35,6 @@ export default Home;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let tweets = await fetchTweets();
-  console.log(tweets);
-
   return {
     props: { tweets },
   };
