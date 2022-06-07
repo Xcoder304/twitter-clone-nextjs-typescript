@@ -1,14 +1,22 @@
 import { RefreshIcon } from "@heroicons/react/outline";
-import React from "react";
+import React, { useState } from "react";
 import TweetBox from "./TweetBox";
 import TweetComponent from "./Tweets";
 import { Tweet } from "../typing";
+import { fetchTweets } from "../utils/fetchTweets";
 
 interface Props {
   tweets: Tweet[];
 }
 
-function Feeds({ tweets }: Props) {
+function Feeds({ tweets: tweetsProp }: Props) {
+  const [tweets, setTweets] = useState<Tweet[]>(tweetsProp);
+
+  const UpdateTweets = async () => {
+    const tweets = await fetchTweets();
+    setTweets(tweets);
+  };
+
   return (
     <div className="col-span-8 lg:col-span-5 border-x">
       {/* top bar */}
@@ -16,7 +24,10 @@ function Feeds({ tweets }: Props) {
         <h4 className="p-5 pb-0 text-xl font-bold capitalize text-[#0f1419]">
           home
         </h4>
-        <RefreshIcon className="mr-5 mt-5 w-8 h-8 cursor-pointer transition-all duration-500 ease-out text-twitterColor hover:rotate-180 active:scale-125 outline-none select-none" />
+        <RefreshIcon
+          className="mr-5 mt-5 w-8 h-8 cursor-pointer transition-all duration-500 ease-out text-twitterColor hover:rotate-180 active:scale-125 outline-none select-none"
+          onClick={UpdateTweets}
+        />
       </div>
 
       {/* Tweet box */}
