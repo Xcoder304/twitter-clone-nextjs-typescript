@@ -45,13 +45,7 @@ function Feeds({ tweets: tweetsProp }: Props) {
       {/* tweets */}
       <div>
         {tweets.map((tweet) => {
-          return (
-            <TweetComponent
-              key={tweet._id}
-              tweet={tweet}
-              setTweets={setTweets}
-            />
-          );
+          return <TweetComponent key={tweet._id} tweet={tweet} />;
         })}
       </div>
     </div>

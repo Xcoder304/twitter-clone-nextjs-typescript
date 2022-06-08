@@ -10,14 +10,12 @@ import {
 import { fetchComments } from "../utils/fetchComments";
 import { useSession } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
-import { fetchTweets } from "../utils/fetchTweets";
 
 interface Props {
   tweet: Tweet;
-  setTweets: any;
 }
 
-function Tweets({ tweet, setTweets }: Props) {
+function Tweets({ tweet }: Props) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [openComments, setOpenComments] = useState<boolean>(false);
   const [userComment, setuserComment] = useState<string>("");
@@ -151,22 +149,33 @@ function Tweets({ tweet, setTweets }: Props) {
 
       {openComments && (
         <div className="my-2 mt-4 max-h-70 overflow-y-scroll scrollbar-hide relative">
-          <form className="flex items-center flex-1 space-x-2 w-[90%] mx-auto">
-            <input
-              type="text"
-              placeholder="Your comment..."
-              className="px-2 py-2 bg-slate-100 border outline-none rounded-md flex-1"
-              value={userComment}
-              onChange={(e) => setuserComment(e.target.value)}
-            />
-            <button
-              type="submit"
-              className="px-6 py-2 bg-twitterBg_1 text-white text-base font-bold rounded-full hover:opacity-70 transition-all duration-100 ease-in"
-              onClick={ADD_COMMENT}
-            >
-              Post{" "}
-            </button>
-          </form>
+          {session ? (
+            <form className="flex items-center flex-1 space-x-2 w-[90%] mx-auto">
+              <input
+                type="text"
+                placeholder="Your comment..."
+                className="px-2 py-2 bg-slate-100 border outline-none rounded-md flex-1"
+                value={userComment}
+                onChange={(e) => setuserComment(e.target.value)}
+              />
+              <button
+                disabled={!userComment}
+                type="submit"
+                className={`px-6 py-2 bg-twitterBg_1 text-white text-base font-bold rounded-full hover:opacity-70 transition-all duration-100 ease-in ${
+                  !userComment && "opacity-40 pointer-events-none"
+                }`}
+                onClick={ADD_COMMENT}
+              >
+                Post{" "}
+              </button>
+            </form>
+          ) : (
+            <div className="px-6">
+              <h3 className="mt-2 text-xl text-gray-700 font-semibold block p-2 pb-1 select-none">
+                Sign in for Post an Commnet
+              </h3>
+            </div>
+          )}
 
           {comments.length == 0 ? (
             <div className="px-7">
@@ -179,10 +188,10 @@ function Tweets({ tweet, setTweets }: Props) {
               return (
                 <div
                   key={comments._id}
-                  className="flex flex-col space-x-11 mt-7"
+                  className="flex flex-col space-x-11 mt-4"
                 >
                   <div className="relative flex space-x-2">
-                    <hr className="absolute left-6 top-7 z-10 h-10 border-x border-gray-300" />
+                    <hr className="absolute left-6 top-7 z-10 h-12 border-x border-gray-300" />
                     <img
                       src={comments?.profileImg}
                       alt="user image"
