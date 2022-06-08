@@ -55,9 +55,8 @@ function TweetBox({ setTweets }: Props) {
     );
 
     let res = await f.json();
-
-    const tweets = await fetchTweets();
-    setTweets(tweets);
+    const newtweets = await fetchTweets();
+    setTweets(newtweets);
 
     toast.success("Your Tweet Has been Uploaded", {
       id: Refreshtoast,

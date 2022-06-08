@@ -45,7 +45,7 @@ function Tweets({ tweet }: Props) {
     };
 
     const CommentToast = toast.loading("Uploading the Comment");
-    console.log(process.env.NEXT_PUBLIC_HOSTING_URL);
+    console.log("local name >>", process.env.NEXT_PUBLIC_HOSTING_URL);
     let f = await fetch(
       `${process.env.NEXT_PUBLIC_HOSTING_URL}/api/addComment`,
       {
@@ -69,8 +69,6 @@ function Tweets({ tweet }: Props) {
       toast.error("some things is wrong please try again");
     }
   };
-
-  console.log(tweet);
 
   return (
     <div className="flex space-x-3 flex-col p-5 pb-2 border-y border-gray-200">

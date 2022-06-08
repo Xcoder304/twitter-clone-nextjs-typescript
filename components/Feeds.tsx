@@ -23,6 +23,8 @@ function Feeds({ tweets: tweetsProp }: Props) {
     });
   };
 
+  console.log("feeds tweets", tweets);
+
   return (
     <div className="col-span-8 lg:col-span-5 border-x max-h-screen overflow-y-scroll scrollbar-hide pb-3">
       <Toaster position="top-center" reverseOrder={false} />
