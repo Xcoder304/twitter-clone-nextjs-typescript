@@ -7,8 +7,15 @@ import {
 } from "@heroicons/react/outline";
 import React, { useRef, useState } from "react";
 import { useSession } from "next-auth/react";
+import { TweetBody } from "../typing";
+import { fetchTweets } from "../utils/fetchTweets";
+import toast, { Toaster } from "react-hot-toast";
 
-function TweetBox() {
+interface Props {
+  setTweets: any;
+}
+
+function TweetBox({ setTweets }: Props) {
   const [userInput, setUserInput] = useState<string>("");
   const [image, setImage] = useState<string>("");
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -23,8 +30,52 @@ function TweetBox() {
     imageInputRef.current.value = "";
   };
 
+  const ADD_TWEET = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    const tweetBody: TweetBody = {
+      text: userInput,
+      username: session?.user?.name || "unKnown User",
+      profileImg:
+        session?.user?.image ||
+        "https://cdn-icons-png.flaticon.com/512/847/847969.png",
+      image: image,
+    };
+
+    const Refreshtoast = toast.loading("Uploading the tweet");
+    let f = await fetch(
+      `${process.env.NEXT_PUBLIC_HOSTING_URL}/api/addTweets`,
+      {
+        body: JSON.stringify(tweetBody),
+        method: "POST",
+      }
+    );
+
+    let res = await f.json();
+
+    if (res.success) {
+      const tweets = await fetchTweets();
+      setTweets(tweets);
+
+      toast.success(res.message, {
+        id: Refreshtoast,
+      });
+
+      setImage("");
+      setUserInput("");
+      setisAddImgOpen(false);
+    } else {
+      toast.error("some things is wrong please try again");
+    }
+  };
+
+  console.log("this is image >>>>>", image);
+
   return (
     <div className="flex space-x-4 px-2 mt-4 border-b pb-4">
+      <Toaster position="top-center" reverseOrder={false} />
+
       <img
         src={
           session?.user?.image ||
@@ -35,7 +86,7 @@ function TweetBox() {
       />
 
       <div className="flex flex-col flex-1">
-        <form className="flex-1 flex flex-col">
+        <form className="flex-1 flex flex-col" method="POST">
           <input
             type="text"
             placeholder={`What's happening ${session?.user?.name}?`}
@@ -56,10 +107,12 @@ function TweetBox() {
             </div>
 
             <button
+              type="submit"
               disabled={!userInput}
               className={`bg-twitterBg_1 text-white px-5 py-[6px] text-lg capitalize font-medium rounded-full mr-2 transition-all duration-400 ease-in ${
                 !userInput && "opacity-40"
               }`}
+              onClick={ADD_TWEET}
             >
               tweet
             </button>

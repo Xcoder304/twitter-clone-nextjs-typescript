@@ -13,7 +13,7 @@ interface Props {
 
 const Home = ({ tweets }: Props) => {
   return (
-    <div className="lg:max-w-6xl mx-auto h-screen ">
+    <div className="lg:max-w-6xl mx-auto h-screen overflow-hidden">
       <Head>
         <title>Twitter Clone</title>
         <link

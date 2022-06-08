@@ -24,7 +24,7 @@ function Feeds({ tweets: tweetsProp }: Props) {
   };
 
   return (
-    <div className="col-span-8 lg:col-span-5 border-x">
+    <div className="col-span-8 lg:col-span-5 border-x max-h-screen overflow-y-scroll">
       <Toaster position="top-center" reverseOrder={false} />
       {/* top bar */}
       <div className="flex items-center justify-between select-none">
@@ -39,7 +39,7 @@ function Feeds({ tweets: tweetsProp }: Props) {
 
       {/* Tweet box */}
       <div>
-        <TweetBox />
+        <TweetBox setTweets={setTweets} />
       </div>
 
       {/* tweets */}
