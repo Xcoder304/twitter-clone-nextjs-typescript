@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Comment, Tweet } from "../typing";
+import { Comment, CommentBody, Tweet } from "../typing";
 import TimeAgo from "react-timeago";
 import {
   ChatAlt2Icon,
@@ -8,14 +8,20 @@ import {
   UploadIcon,
 } from "@heroicons/react/outline";
 import { fetchComments } from "../utils/fetchComments";
+import { useSession } from "next-auth/react";
+import toast, { Toaster } from "react-hot-toast";
+import { fetchTweets } from "../utils/fetchTweets";
 
 interface Props {
   tweet: Tweet;
+  setTweets: any;
 }
 
-function Tweets({ tweet }: Props) {
+function Tweets({ tweet, setTweets }: Props) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [openComments, setOpenComments] = useState<boolean>(false);
+  const [userComment, setuserComment] = useState<string>("");
+  const { data: session } = useSession();
 
   const getComments = async () => {
     let comments: Comment[] = await fetchComments(tweet._id);
@@ -26,8 +32,48 @@ function Tweets({ tweet }: Props) {
     getComments();
   }, []);
 
+  const ADD_COMMENT = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+
+    const commentBody: CommentBody = {
+      comment: userComment,
+      username: session?.user?.name || "unKnown User",
+      profileImg:
+        session?.user?.image ||
+        "https://cdn-icons-png.flaticon.com/512/847/847969.png",
+      tweetId: tweet._id,
+    };
+
+    const CommentToast = toast.loading("Uploading the Comment");
+    let f = await fetch(
+      `${process.env.NEXT_PUBLIC_HOSTING_URL}/api/addComment`,
+      {
+        body: JSON.stringify(commentBody),
+        method: "POST",
+      }
+    );
+
+    let res = await f.json();
+
+    if (res.success) {
+      let comments: Comment[] = await fetchComments(tweet._id);
+      setComments(comments);
+
+      toast.success(res.message, {
+        id: CommentToast,
+      });
+
+      setuserComment("");
+    } else {
+      toast.error("some things is wrong please try again");
+    }
+  };
+
   return (
     <div className="flex space-x-3 flex-col p-5 pb-2 border-y border-gray-200">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="flex space-x-3">
         <img
           src={tweet?.profileImg}
@@ -98,57 +144,76 @@ function Tweets({ tweet }: Props) {
           <p className="text-gray-400">5</p>
         </div>
       </div>
+      {/*
+       */}
 
       {/* comments */}
-      {openComments &&
-        (comments.length == 0 ? (
-          <div className="px-7">
-            <h3 className="mt-2 text-xl text-gray-800 font-bold block p-2 select-none">
-              {"   "} No Comments in this Tweet{" "}
-            </h3>
-          </div>
-        ) : (
-          <div className="my-2 mt-5  max-h-44 overflow-y-scroll p-6">
-            {comments.length > 0 &&
-              comments.map((comments) => {
-                return (
-                  <div
-                    key={comments._id}
-                    className="flex flex-col space-x-11 mt-2"
-                  >
-                    <div className="relative flex space-x-2">
-                      <hr className="absolute left-6 top-7 z-10 h-10 border-x border-gray-300" />
-                      <img
-                        src={comments?.profileImg}
-                        alt="user image"
-                        className="w-9 h-9 object-cover rounded-full select-none shadow-md cursor-pointer  hover:border-4 hover:border-twitterColor transition-all duration-100 ease-in z-20"
+
+      {openComments && (
+        <div className="my-2 mt-4 max-h-70 overflow-y-scroll scrollbar-hide relative">
+          <form className="flex items-center flex-1 space-x-2 w-[90%] mx-auto">
+            <input
+              type="text"
+              placeholder="Your comment..."
+              className="px-2 py-2 bg-slate-100 border outline-none rounded-md flex-1"
+              value={userComment}
+              onChange={(e) => setuserComment(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="px-6 py-2 bg-twitterBg_1 text-white text-base font-bold rounded-full hover:opacity-70 transition-all duration-100 ease-in"
+              onClick={ADD_COMMENT}
+            >
+              Post{" "}
+            </button>
+          </form>
+
+          {comments.length == 0 ? (
+            <div className="px-7">
+              <h3 className="mt-2 text-xl text-gray-800 font-bold block p-2 select-none">
+                {"   "} No Comments in this Tweet{" "}
+              </h3>
+            </div>
+          ) : (
+            comments.map((comments) => {
+              return (
+                <div
+                  key={comments._id}
+                  className="flex flex-col space-x-11 mt-7"
+                >
+                  <div className="relative flex space-x-2">
+                    <hr className="absolute left-6 top-7 z-10 h-10 border-x border-gray-300" />
+                    <img
+                      src={comments?.profileImg}
+                      alt="user image"
+                      className="w-9 h-9 object-cover rounded-full select-none shadow-md cursor-pointer  hover:border-4 hover:border-twitterColor transition-all duration-100 ease-in z-20"
+                    />
+
+                    <div className="flex items-center space-x-2">
+                      <span className="text-gray-700 font-medium text-base">
+                        {comments?.username}
+                      </span>
+                      <p className="text-twitterColor cursor-pointer text-sm hover:underline">
+                        @{comments?.username.split(" ").join("").toLowerCase()}
+                        <span className="select-none">.</span>
+                      </p>
+
+                      <TimeAgo
+                        date={comments?._createdAt}
+                        className="text-sm text-gray-500 ml-3 select-none pointer-events-none"
                       />
-
-                      <div className="flex items-center space-x-2">
-                        <span className="text-gray-700 font-medium text-base">
-                          {comments?.username}
-                        </span>
-                        <p className="text-twitterColor cursor-pointer text-sm hover:underline">
-                          @
-                          {comments?.username.split(" ").join("").toLowerCase()}
-                          <span className="select-none">.</span>
-                        </p>
-
-                        <TimeAgo
-                          date={comments?._createdAt}
-                          className="text-sm text-gray-500 ml-3 select-none pointer-events-none"
-                        />
-                      </div>
                     </div>
-
-                    <p className="text-gray-800 text-base font-normal ">
-                      {comments?.comment}
-                    </p>
                   </div>
-                );
-              })}
-          </div>
-        ))}
+
+                  <p className="text-gray-800 text-base font-normal ">
+                    {comments?.comment}
+                  </p>
+                </div>
+              );
+            })
+          )}
+        </div>
+      )}
     </div>
   );
 }

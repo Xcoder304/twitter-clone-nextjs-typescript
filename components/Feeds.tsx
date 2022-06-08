@@ -24,7 +24,7 @@ function Feeds({ tweets: tweetsProp }: Props) {
   };
 
   return (
-    <div className="col-span-8 lg:col-span-5 border-x max-h-screen overflow-y-scroll">
+    <div className="col-span-8 lg:col-span-5 border-x max-h-screen overflow-y-scroll scrollbar-hide pb-3">
       <Toaster position="top-center" reverseOrder={false} />
       {/* top bar */}
       <div className="flex items-center justify-between select-none">
@@ -45,7 +45,13 @@ function Feeds({ tweets: tweetsProp }: Props) {
       {/* tweets */}
       <div>
         {tweets.map((tweet) => {
-          return <TweetComponent key={tweet._id} tweet={tweet} />;
+          return (
+            <TweetComponent
+              key={tweet._id}
+              tweet={tweet}
+              setTweets={setTweets}
+            />
+          );
         })}
       </div>
     </div>

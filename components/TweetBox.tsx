@@ -70,8 +70,6 @@ function TweetBox({ setTweets }: Props) {
     }
   };
 
-  console.log("this is image >>>>>", image);
-
   return (
     <div className="flex space-x-4 px-2 mt-4 border-b pb-4">
       <Toaster position="top-center" reverseOrder={false} />
