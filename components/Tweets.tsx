@@ -45,11 +45,14 @@ function Tweets({ tweet }: Props) {
     };
 
     const CommentToast = toast.loading("Uploading the Comment");
-    console.log(process.env.HOSTING_URL);
-    let f = await fetch(`${process.env.HOSTING_URL}/api/addComment`, {
-      body: JSON.stringify(commentBody),
-      method: "POST",
-    });
+    console.log(process.env.NEXT_PUBLIC_HOSTING_URL);
+    let f = await fetch(
+      `${process.env.NEXT_PUBLIC_HOSTING_URL}/api/addComment`,
+      {
+        body: JSON.stringify(commentBody),
+        method: "POST",
+      }
+    );
 
     let res = await f.json();
 

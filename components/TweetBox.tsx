@@ -44,12 +44,15 @@ function TweetBox({ setTweets }: Props) {
     };
 
     const Refreshtoast = toast.loading("Uploading the tweet");
-    console.log(process.env.HOSTING_URL);
+    console.log("local name >>", process.env.NEXT_PUBLIC_HOSTING_URL);
 
-    let f = await fetch(`${process.env.HOSTING_URL}/api/addTweets`, {
-      body: JSON.stringify(tweetBody),
-      method: "POST",
-    });
+    let f = await fetch(
+      `${process.env.NEXT_PUBLIC_HOSTING_URL}/api/addTweets`,
+      {
+        body: JSON.stringify(tweetBody),
+        method: "POST",
+      }
+    );
 
     let res = await f.json();
 
