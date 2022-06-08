@@ -32,7 +32,7 @@ export default async function handler(
   let result = await fetch(apiEndPoint, {
     headers: {
       "content-type": "application/json",
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_SANITY_API_TOKEN}`,
+      Authorization: `Bearer ${process.env.SANITY_API_TOKEN}`,
     },
     body: JSON.stringify(mutations),
     method: "POST",
