@@ -44,6 +44,8 @@ function TweetBox({ setTweets }: Props) {
     };
 
     const Refreshtoast = toast.loading("Uploading the tweet");
+    console.log(process.env.NEXT_PUBLIC_HOSTING_URL);
+
     let f = await fetch(
       `${process.env.NEXT_PUBLIC_HOSTING_URL}/api/addTweets`,
       {
@@ -54,20 +56,16 @@ function TweetBox({ setTweets }: Props) {
 
     let res = await f.json();
 
-    if (res.success) {
-      const tweets = await fetchTweets();
-      setTweets(tweets);
+    const tweets = await fetchTweets();
+    setTweets(tweets);
 
-      toast.success(res.message, {
-        id: Refreshtoast,
-      });
+    toast.success("Your Tweet Has been Uploaded", {
+      id: Refreshtoast,
+    });
 
-      setImage("");
-      setUserInput("");
-      setisAddImgOpen(false);
-    } else {
-      toast.error("some things is wrong please try again");
-    }
+    setImage("");
+    setUserInput("");
+    setisAddImgOpen(false);
   };
 
   return (
